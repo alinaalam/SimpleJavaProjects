@@ -6,7 +6,6 @@ public class Checking extends Account {
 	private int debitCardPIN;
 	
 	private final int ACCOUNT_TYPE = 2;
-	private double baseRate;
 	
 	Checking(String fullname, String SSN) {
 		this(fullname, SSN, 0);
@@ -17,9 +16,27 @@ public class Checking extends Account {
 		setAccountType(ACCOUNT_TYPE);
 		setAccountNumber();
 		setBaseRate();
+		setDebitCardParameters();
+	}
+	
+	private void setDebitCardParameters() {
+		debitCardNumber = (int) (Math.random() * Math.pow(10, 12));
+		debitCardPIN = (int) (Math.random() * Math.pow(10, 4));
 	}
 	
 	public void setBaseRate() {
-		baseRate = super.getBaseRate() * 0.15;
+		baseRate = getBaseRate() * 0.15;
+	}
+	
+	public void showInfo() {
+		super.showInfo();
+		
+		StringBuffer sb = new StringBuffer();
+		
+		sb.append("Your Account Features: \n");
+		sb.append("Debit Card Number: " + debitCardNumber + "\n");
+		sb.append("Debit Card PIN: " + debitCardPIN + "\n");
+		
+		System.out.println(sb.toString());
 	}
 }

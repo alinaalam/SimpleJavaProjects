@@ -2,8 +2,10 @@ package bankaccountapp;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+
+import utilities.CSV;
 
 /**
  * Scenario: You are a back end developer and need to create an application
@@ -30,21 +32,24 @@ import java.util.List;
  *
  */
 public class BankAccountApp {
+	
+	public static String filename = "data/NewBankAccounts.csv";
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("data/NewBankAccounts.csv"));
-			String currentLine = br.readLine();
 			
-			List<Account> accounts = new ArrayList<Account>();
+			List<String[]> accounts = CSV.read(filename);
+			List<Account> customerAccounts = new LinkedList<Account>();
 			
-			while(currentLine != null) {
-				storeAccountsInformation(currentLine, accounts);
-				currentLine = br.readLine();
+			for(String[] account : accounts) {
+				customerAccounts.add(storeAccountsInformation(account));
 			}
 			
-			br.close();
+			for(Account account: customerAccounts) {
+				account.showInfo();
+			}
+			
 		} catch(Exception e) {
 			System.out.println("Unable to read file");
 			e.printStackTrace();
@@ -52,9 +57,8 @@ public class BankAccountApp {
 		
 	}
 	
-	public static void storeAccountsInformation(String accountDetails, List<Account> accounts) {
+	public static Account storeAccountsInformation(String[] parsedAccountInfo) {
 		
-		String[] parsedAccountInfo = accountDetails.split(",");
 		if(parsedAccountInfo.length > 3) {
 			
 			String fullname = parsedAccountInfo[0];
@@ -71,10 +75,11 @@ public class BankAccountApp {
 				account = new Checking(fullname, SSN, initialDeposit);
 			}
 			
-			accounts.add(account);
+			return account;
 		}
 		else {
-			System.out.println("Incomplete Account Info for " + accountDetails);
+			System.out.println("Incomplete Account Info for " + String.join(",", parsedAccountInfo));
+			return null;
 		}
 	}
 

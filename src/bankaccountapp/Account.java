@@ -7,13 +7,18 @@ public abstract class Account implements IBaseRate {
 	private double currentBalance;
 	private String accountNumber;
 	private int accountType;
-	private final double BASE_RATE = 100;
+	
+	protected double baseRate;
+	protected double compoundInterest;
+	
 	private static int index;
 	
 	Account(String fullname, String SSN, double initialDeposit) {
 		this.fullname = fullname;
 		this.SSN = SSN;
 		this.currentBalance = initialDeposit;
+		
+		setBaseRate();
 	}
 	
 	static {
@@ -42,23 +47,46 @@ public abstract class Account implements IBaseRate {
 		return accountNumber;
 	}
 	
-	public double getBaseRate() {
-		return BASE_RATE;
+	public abstract void setBaseRate();
+	
+	public void compountInterest() {
+		compoundInterest = currentBalance * (baseRate/100);
+		currentBalance += compoundInterest;
+		System.out.println("Accrued Interest is $: " + compoundInterest);
+		printBalance();
 	}
 	
 	public void deposit(double amount) {
-		
+		currentBalance += amount;
+		System.out.println("You have successfully deposited $" + amount);
+		printBalance();
 	}
 	
 	public void withdraw(double amount) {
-		
+		currentBalance -= amount;
+		System.out.println("You have successfully withdrawn $" + amount);
+		printBalance();
 	}
 	
-	public void transfer(double amount) {
-		
+	public void transfer(String account, double amount) {
+		System.out.println("Transferring $" + amount + " to Account: " + account);
+		currentBalance -= amount;
+		printBalance();
+	}
+	
+	public void printBalance() {
+		System.out.println("Your balance is: " + currentBalance);
 	}
 	
 	public void showInfo() {
+		StringBuffer sb = new StringBuffer();
 		
+		sb.append("Name: " + fullname + "\n");
+		sb.append("Account Type: " + accountType + "\n");
+		sb.append("Account Number: " + accountNumber + "\n");
+		sb.append("Balance: " + currentBalance + "\n");
+		sb.append("Base Rate: " + baseRate + "%\n");
+		
+		System.out.println(sb.toString());
 	}
 }
